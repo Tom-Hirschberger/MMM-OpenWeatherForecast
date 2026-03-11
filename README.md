@@ -127,6 +127,10 @@ Find out your latitude and longitude here:
       <td>Makes the temperature display for current conditions and hourly forecast show the "feels like" temperature instead of the actual temperature.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>false</code></td>
     </tr>
     <tr>
+      <td><code>combineFeelsLikeTemp</code></td>
+      <td>If `showFeelsLikeTemp` is set to `true` and this option the forecast temperature and the feels like temperature are displayed both. The feels like temperature will be displayed in `()` then.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>false</code></td>
+    </tr>
+    <tr>
       <td><code>showCurrentConditions</code></td>
       <td>Whether to show current temperature and current conditions icon.<br><br><strong>Type</strong> <code>Boolean</code><br>Defaults to <code>true</code></td>
     </tr>
