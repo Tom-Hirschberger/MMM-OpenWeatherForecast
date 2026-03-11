@@ -66,6 +66,7 @@ Module.register("MMM-OpenWeatherForecast", {
     forecastIconSize: 70,
     updateFadeSpeed: 500,
     showFeelsLikeTemp: false,
+	combineFeelsLikeTemp: false,
     showSummary: true,
 
     showCurrentConditions: true,
@@ -353,11 +354,20 @@ Module.register("MMM-OpenWeatherForecast", {
       accumulation = `${Math.round(this.weatherData.current.snow["1h"] * 10) / 10} ${this.getUnit("accumulationSnow")}`;
     }
 
+	let temperature_string
+	if (this.config.showFeelsLikeTemp) {
+		if (this.config.combineFeelsLikeTemp) {
+			temperature_string = `${Math.round(this.weatherData.current.temp)}° (${Math.round(this.weatherData.current.feels_like)}°)`
+		} else {
+			temperature_string = `${Math.round(this.weatherData.current.feels_like)}°`
+		}
+	} else {
+		temperature_string = `${Math.round(this.weatherData.current.temp)}°`
+	}
+
     return {
       currently: {
-        temperature: this.config.showFeelsLikeTemp
-          ? `${Math.round(this.weatherData.current.feels_like)}°`
-          : `${Math.round(this.weatherData.current.temp)}°`,
+        temperature: temperature_string,
         animatedIconId: this.config.useAnimatedIcons
           ? this.addIcon(this.iconMap[this.weatherData.current.weather[0].icon], true)
           : null,
@@ -405,13 +415,27 @@ Module.register("MMM-OpenWeatherForecast", {
 
     // --------- Temperature ---------
 
-    if (type === "hourly" && this.config.showFeelsLikeTemp) { // just display projected temperature for that hour
-      fItem.temperature = `${Math.round(fData.feels_like)}°`;
-    } else if (type === "hourly" && !this.config.showFeelsLikeTemp) {
-      fItem.temperature = `${Math.round(fData.temp)}°`;
+	if (type === "hourly") { // just display projected temperature for that hour
+		if (this.config.showFeelsLikeTemp) {
+			if (this.config.combineFeelsLikeTemp) {
+				fItem.temperature = `${Math.round(fData.temp)}° (${Math.round(fData.feels_like)}°)`;
+			} else {
+				fItem.temperature = `${Math.round(fData.feels_like)}°`;
+			}
+		} else {
+			fItem.temperature = `${Math.round(fData.temp)}°`;
+		}
     } else { // display High / Low temperatures
       fItem.tempRange = this.formatHiLowTemperature(fData.temp.max, fData.temp.min);
     }
+
+    // if (type === "hourly" && this.config.showFeelsLikeTemp) { // just display projected temperature for that hour
+    //   fItem.temperature = `${Math.round(fData.feels_like)}°`;
+    // } else if (type === "hourly" && !this.config.showFeelsLikeTemp) {
+    //   fItem.temperature = `${Math.round(fData.temp)}°`;
+    // } else { // display High / Low temperatures
+    //   fItem.tempRange = this.formatHiLowTemperature(fData.temp.max, fData.temp.min);
+    // }
 
     /*
      *  --------- Precipitation ---------
