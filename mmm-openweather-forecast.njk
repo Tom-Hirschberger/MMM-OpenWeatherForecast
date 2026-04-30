@@ -21,10 +21,13 @@
     {% endif %}
 
     {# -------------- Summary -------------- #}
-    {% if config.showSummary %}
+    {% if config.showSummary or config.showAlerts %}
       <div class="summary-wrapper small">
+        {% if config.showSummary %}
         <div class="summary">{{ forecast.summary }}</div>
+        {% endif %}
 
+        {% if config.showAlerts %}
         {% for alert in forecast.alerts %}
           <div class="weather-alert">
             <span class="weather-alert-title">{{ alert.event }}</span>
@@ -32,6 +35,7 @@
             <span class="weather-alert-source">{{ alert.sender_name }}</span>
           </div>
         {% endfor %}
+        {% endif %}
       </div>
     {% endif %}
 
