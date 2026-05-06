@@ -63,6 +63,42 @@ module.exports = NodeHelper.create({
 
           if (typeof data !== "undefined") {
             data.instanceId = payload.instanceId;
+// --- START: Home Assistant Temperature Integration ---
+            // Check config.js
+            if (this.config.haUrl && this.config.haToken && this.config.haSensor) {
+              try {
+                const haUrl = `${this.config.haUrl}/api/states/${this.config.haSensor}`;
+                
+                // Wir holen die Daten von Home Assistant
+                const haResponse = await fetch(haUrl, {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${this.config.haToken}`,
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (haResponse.ok) {
+                  const haData = await haResponse.json();
+                  
+                  // Overwrite Openweather Temo
+                  if (haData && haData.state) {
+                    const haTemp = parseFloat(haData.state);
+                    if (!isNaN(haTemp) && data.current) {
+                      data.current.temp = haTemp; 
+                      // Optional "feels like" override:
+                      // data.current.feels_like = haTemp; 
+                    }
+                  }
+                } else {
+                  Log.warn(`[MMM-OpenWeatherForecast] Home Assistant API Fehler: ${haResponse.status}`);
+                }
+              } catch (haError) {
+                // Log HA unavailability                
+                Log.error(`[MMM-OpenWeatherForecast] Error connecting to HA: ${haError}`);
+              }
+            }
+// --- END: Home Assistant Temperature Integration ---
             this.sendSocketNotification("OPENWEATHER_FORECAST_DATA", data);
           }
         } catch (error) {
