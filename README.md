@@ -45,6 +45,8 @@ Make sure to subscribe to the new 3.0 API first and wait a couple hours till the
 Find out your latitude and longitude here:
 <https://www.latlong.net/>.
 
+A Home Assistant sensor can optionally be used to display the current outside temperature instead of the temperature from OpenWeather API.
+
 ### Minimal Configuration
 
 ```js
@@ -73,6 +75,18 @@ Find out your latitude and longitude here:
     <tr>
       <td><code>apiBaseURL</code></td>
       <td>An alternative API URL you want to use. I.e. <code>https://api.openweathermap.org/data/3.0/onecall?</code> for the new One Call 3.0 API.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>https://api.openweathermap.org/data/3.0/onecall?</code></td>
+    </tr>
+    <tr>
+      <td><code>haUrl</code></td>
+      <td>Optional: URL to you Home Assistant instance.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>""</code></td>
+    </tr>
+    <tr>
+      <td><code>haToken</code></td>
+      <td>Optional: Home Assistant long living token.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>""</code></td>
+    </tr>
+    <tr>
+      <td><code>haSensor</code></td>
+      <td>Optional: Home Assistant sensor to be shown as current temperature.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>""</code></td>
     </tr>
     <tr>
       <td><code>updateInterval</code></td>
