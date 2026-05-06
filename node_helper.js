@@ -63,13 +63,13 @@ module.exports = NodeHelper.create({
 
           if (typeof data !== "undefined") {
             data.instanceId = payload.instanceId;
-// --- START: Home Assistant Temperature Integration ---
+// --- START: Home Assistant Temperature integration ---
             // Check config.js
             if (this.config.haUrl && this.config.haToken && this.config.haSensor) {
               try {
                 const haUrl = `${this.config.haUrl}/api/states/${this.config.haSensor}`;
                 
-                // Wir holen die Daten von Home Assistant
+                // Request data from Home Assistant
                 const haResponse = await fetch(haUrl, {
                   method: 'GET',
                   headers: {
@@ -86,8 +86,6 @@ module.exports = NodeHelper.create({
                     const haTemp = parseFloat(haData.state);
                     if (!isNaN(haTemp) && data.current) {
                       data.current.temp = haTemp; 
-                      // Optional "feels like" override:
-                      // data.current.feels_like = haTemp; 
                     }
                   }
                 } else {
