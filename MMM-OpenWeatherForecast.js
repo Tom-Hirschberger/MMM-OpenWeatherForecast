@@ -69,6 +69,9 @@ Module.register("MMM-OpenWeatherForecast", {
 	combineFeelsLikeTemp: false,
     showSummary: true,
     showAlerts: true,
+	haUrl: "",
+    haToken: "",
+    haSensor: "",
 
     showCurrentConditions: true,
     showExtraCurrentConditions: true,
