@@ -31,6 +31,10 @@ module.exports = NodeHelper.create({
     Log.log(`Starting node_helper for: ${this.name}`);
   },
 
+  evalHaTemplateString(template, config) {
+    return template.replace(/{{(.*?)}}/g, (_, key) => config[key.trim()] ?? "");
+  },
+
   async socketNotificationReceived (notification, payload) {
     if (notification === "OPENWEATHER_FORECAST_GET") {
       if (payload.apikey === null || payload.apikey === "") {
@@ -63,6 +67,44 @@ module.exports = NodeHelper.create({
 
           if (typeof data !== "undefined") {
             data.instanceId = payload.instanceId;
+// --- START: Home Assistant Temperature integration ---
+            // Check config.js
+            if (this.config.haUrl != null) {
+              try {
+                
+                const haFetchUrl = this.evalHaTemplateString(this.config.haUrlTemplate, this.config);
+                Log.debug(`[MMM-OpenWeatherForecast] Fetching HA Url: ${haFetchUrl}`);
+                
+                // Request data from Home Assistant
+                const haResponse = await fetch(haFetchUrl, {
+                  method: 'GET',
+                  headers: {
+                    'Authorization': `Bearer ${this.config.haToken}`,
+                    'Content-Type': 'application/json'
+                  }
+                });
+
+                if (haResponse.ok) {
+                  const haData = await haResponse.json();
+                  Log.info(`[MMM-OpenWeatherForecast] Using ha data: ${haData}`);
+                  
+                  // Overwrite Openweather Temo
+                  if (haData && haData.state) {
+                    const haTemp = parseFloat(haData.state);
+                    if (!isNaN(haTemp) && data.current) {
+                      Log.debug(`[MMM-OpenWeatherForecast] Using HA temperature ${haTemp}`);
+                      data.current.temp = haTemp; 
+                    }
+                  }
+                } else {
+                  Log.warn(`[MMM-OpenWeatherForecast] Home Assistant API Fehler: ${haResponse.status}`);
+                }
+              } catch (haError) {
+                // Log HA unavailability                
+                Log.error(`[MMM-OpenWeatherForecast] Error connecting to HA: ${haError}`);
+              }
+            }
+// --- END: Home Assistant Temperature Integration ---
             this.sendSocketNotification("OPENWEATHER_FORECAST_DATA", data);
           }
         } catch (error) {
