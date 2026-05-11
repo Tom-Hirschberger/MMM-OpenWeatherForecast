@@ -31,6 +31,10 @@ module.exports = NodeHelper.create({
     Log.log(`Starting node_helper for: ${this.name}`);
   },
 
+  evalHaTemplateString(template, config) {
+    return template.replace(/{{(.*?)}}/g, (_, key) => config[key.trim()] ?? "");
+  },
+
   async socketNotificationReceived (notification, payload) {
     if (notification === "OPENWEATHER_FORECAST_GET") {
       if (payload.apikey === null || payload.apikey === "") {
@@ -65,12 +69,14 @@ module.exports = NodeHelper.create({
             data.instanceId = payload.instanceId;
 // --- START: Home Assistant Temperature integration ---
             // Check config.js
-            if (this.config.haUrl && this.config.haToken && this.config.haSensor) {
+            if (this.config.haUrl != null) {
               try {
-                const haUrl = `${this.config.haUrl}/api/states/${this.config.haSensor}`;
+                
+                const haFetchUrl = this.evalHaTemplateString(this.config.haUrlTemplate, this.config);
+                Log.debug(`[MMM-OpenWeatherForecast] Fetching HA Url: ${haFetchUrl}`);
                 
                 // Request data from Home Assistant
-                const haResponse = await fetch(haUrl, {
+                const haResponse = await fetch(haFetchUrl, {
                   method: 'GET',
                   headers: {
                     'Authorization': `Bearer ${this.config.haToken}`,
@@ -80,11 +86,13 @@ module.exports = NodeHelper.create({
 
                 if (haResponse.ok) {
                   const haData = await haResponse.json();
+                  Log.info(`[MMM-OpenWeatherForecast] Using ha data: ${haData}`);
                   
                   // Overwrite Openweather Temo
                   if (haData && haData.state) {
                     const haTemp = parseFloat(haData.state);
                     if (!isNaN(haTemp) && data.current) {
+                      Log.debug(`[MMM-OpenWeatherForecast] Using HA temperature ${haTemp}`);
                       data.current.temp = haTemp; 
                     }
                   }
