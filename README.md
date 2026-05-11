@@ -90,7 +90,7 @@ A Home Assistant sensor can optionally be used to display the current outside te
     </tr>
     <tr>
       <td><code>haUrlTemplate</code></td>
-      <td>Optional: The template of the URL the HA sensors will be fetched of. Every config value can be used as a placeholder within <code>{{  }}}</code>.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"{{haUrl}}/api/states/{{haSensor}}"</code></td>
+      <td>Optional: The template of the URL the HA sensors will be fetched of. Every config value can be used as a placeholder within <code>{{  }}</code>.<br><br><strong>Type</strong> <code>String</code><br>Defaults to <code>"{{haUrl}}/api/states/{{haSensor}}"</code></td>
     </tr>
     <tr>
       <td><code>updateInterval</code></td>
