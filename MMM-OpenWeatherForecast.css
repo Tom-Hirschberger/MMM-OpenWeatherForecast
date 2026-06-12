@@ -27,6 +27,17 @@
     color: #6fc4f5;
   }
 
+  .forecast-item.hourly .temperature-container {
+    display: flex !important;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .current.temperature .temperature.combined,
+  .forecast-item.hourly .temperature {
+    margin-right: 0px !important;
+  }
+
   .accumulation::before {
     content: " ";
   }

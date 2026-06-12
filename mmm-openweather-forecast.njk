@@ -14,8 +14,18 @@
             <canvas class="current icon current" id="{{ forecast.currently.animatedIconId }}" width="{{ animatedIconSizes.main }}" height="{{ animatedIconSizes.main }}"></canvas>
           {% else %}
             <img class="current icon current" src="{{ forecast.currently.iconPath }}" />
-          {% endif %}
-          <span class="current temperature bright large light">{{ forecast.currently.temperature }}</span>
+          {% endif %}          
+          <span class="current temperature bright large light">
+            {% if config.showFeelsLikeTemp %}
+              {% if config.combineFeelsLikeTemp %}
+                <span class="temperature combined">{{ forecast.currently.temperature }}</span><span class="space">&nbsp;</span><span class="feelsLike">({{ forecast.currently.feels_like }})</span>
+              {% else %}
+                <span class="feelsLike">{{ forecast.currently.feels_like }}</span>
+              {% endif %}
+            {% else %}
+              <span class="temperature">{{ forecast.currently.temperature }}</span>
+            {% endif %}
+          </span>
         </span>
       </div>
     {% endif %}
@@ -209,8 +219,17 @@
               <img class="forecast-icon" src="{{ h.iconPath }}" />
             {% endif %}
             </span>
-            <span class="temperature-container small">{{ h.temperature }}</span>
-
+            <span class="temperature-container small">
+              {% if config.showFeelsLikeTemp %}
+                {% if config.combineFeelsLikeTemp %}
+                  <span class="temperature combined">{{ h.temperature }}</span><span class="space">&nbsp;</span><span class="feelsLike">({{ h.feels_like }})</span>
+                {% else %}
+                  <span class="feelsLike">{{ h.feels_like }}</span>
+                {% endif %}
+              {% else %}
+                <span class="temperature">{{ h.temperature }}</span>
+              {% endif %}
+            </span>
 
             {% if config.hourlyExtras.precipitation %}
     
