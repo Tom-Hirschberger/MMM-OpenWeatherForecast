@@ -73,6 +73,7 @@ Module.register("MMM-OpenWeatherForecast", {
 	  haUrl: null,
     haToken: null,
     haSensor: null,
+    pressureTemplate: '${Math.round(value / 10)} kPa',
 
     showCurrentConditions: true,
     showExtraCurrentConditions: true,
@@ -179,6 +180,10 @@ Module.register("MMM-OpenWeatherForecast", {
       }
 
     };
+  },
+
+  evalTemplateString(templateString, value){
+    return eval("`"+templateString+"`")
   },
 
   start () {
@@ -382,7 +387,7 @@ Module.register("MMM-OpenWeatherForecast", {
         wind: this.formatWind(this.weatherData.current.wind_speed, this.weatherData.current.wind_deg, this.weatherData.current.wind_gust),
         sunrise: moment(this.weatherData.current.sunrise * 1000).format(this.config.label_sunriseTimeFormat),
         sunset: moment(this.weatherData.current.sunset * 1000).format(this.config.label_sunriseTimeFormat),
-        pressure: `${Math.round(this.weatherData.current.pressure / 10)} kPa`,
+        pressure: this.evalTemplateString(this.config.pressureTemplate, this.weatherData.current.pressure),
         humidity: `${Math.round(this.weatherData.current.humidity)}%`,
         dewPoint: `${Math.round(this.weatherData.current.dew_point)}°`,
         uvIndex: Math.round(this.weatherData.current.uvi),
@@ -470,7 +475,7 @@ Module.register("MMM-OpenWeatherForecast", {
     }
 
     // --------- Barometric Pressure -------------
-    fItem.pressure = `${Math.round(fData.pressure / 10)} kPa`;
+    fItem.pressure = this.evalTemplateString(this.config.pressureTemplate, fData.pressure),
 
     // --------- Humididty -------------
     fItem.humidity = `${Math.round(fData.humidity)}%`;

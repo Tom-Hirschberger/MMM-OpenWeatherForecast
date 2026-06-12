@@ -249,6 +249,10 @@ A Home Assistant sensor can optionally be used to display the current outside te
       <td><code>label_ordinals</code></td>
       <td>How you would like wind direction to be displayed.  Assumes index <code>0</code> is North and proceeds clockwise.<br><br><strong>Type</strong> <code>Array of Strings</code><br>Defaults to <code>["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]</code></td>
     </tr>
+    <tr>
+      <td><code>pressureTemplate</code></td>
+      <td>Control in which units pressure is displayed in the module.<br><br><strong>Type</strong> <code>String with valid JS code</code><br>Defaults to <code>${Math.round(value / 10)} kPa</code></td>
+    </tr>
   </tbody>
 </table>
 
