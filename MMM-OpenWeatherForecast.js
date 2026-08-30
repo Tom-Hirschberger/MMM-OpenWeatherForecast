@@ -278,7 +278,11 @@ Module.register("MMM-OpenWeatherForecast", {
       units: this.config.units,
       language: this.config.language,
       instanceId: this.identifier,
-      requestDelay: this.config.requestDelay
+      requestDelay: this.config.requestDelay,
+      haUrlTemplate: this.config.haUrlTemplate,
+      haUrl: this.config.haUrl,
+      haToken: this.config.haToken,
+      haSensor: this.config.haSensor
     });
   },
 
