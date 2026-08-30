@@ -69,17 +69,17 @@ module.exports = NodeHelper.create({
             data.instanceId = payload.instanceId;
 // --- START: Home Assistant Temperature integration ---
             // Check config.js
-            if (this.config.haUrl != null) {
+            if (payload.haUrl != null) {
               try {
                 
-                const haFetchUrl = this.evalHaTemplateString(this.config.haUrlTemplate, this.config);
+                const haFetchUrl = this.evalHaTemplateString(payload.haUrlTemplate, payload);
                 Log.debug(`[MMM-OpenWeatherForecast] Fetching HA Url: ${haFetchUrl}`);
                 
                 // Request data from Home Assistant
                 const haResponse = await fetch(haFetchUrl, {
                   method: 'GET',
                   headers: {
-                    'Authorization': `Bearer ${this.config.haToken}`,
+                    'Authorization': `Bearer ${payload.haToken}`,
                     'Content-Type': 'application/json'
                   }
                 });
